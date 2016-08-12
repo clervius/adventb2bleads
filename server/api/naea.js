@@ -20,7 +20,7 @@ router.post('/naea/start', function(req,res){
 		//zipCodes.push(zips);
 		var move = function(element){
 			var newCode = new postal();
-			newCode.code = element;
+			newCode.code = element.code;
 			newCode.save(function(err, post){
 				if(!err){
 					console.log('saved ' + post.code);

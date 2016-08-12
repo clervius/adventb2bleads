@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var postSchema = new Schema({
-	code: String,
+	code: Schema.Types.Mixed,
 	createdAt: {
 		type: Date,
 		default: new Date
