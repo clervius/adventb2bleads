@@ -1,0 +1,11 @@
+html
+	head
+		title Save Zip codes to db
+	body
+		form(method="post", action="/zip/add")
+			input(name="codes", type="text", placeholder="Paste Codes here")
+			input(type="submit", value="Save Codes")
+		br
+		br
+		form(method="post", action="/zip/clean")
+			input(type="submit", value="Clean Database")

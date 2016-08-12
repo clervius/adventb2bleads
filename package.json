@@ -1,0 +1,48 @@
+{
+  "name": "b2bleads",
+  "version": "1.0.0",
+  "description": "Joram Clervius, gets specific info and saves to project directory.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clervius/adventb2bleads.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clervius/adventb2bleads/issues"
+  },
+  "homepage": "https://github.com/clervius/adventb2bleads#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "bower": "^1.7.9",
+    "cheerio": "latest",
+    "cheerio-req": "^1.0.1",
+    "clearbit": "^1.2.1",
+    "composable-middleware": "^0.3.0",
+    "compression": "^1.6.2",
+    "errorhandler": "^1.4.3",
+    "express": "^4.14.0",
+    "fullcontact": "^1.0.0",
+    "jade": "^1.11.0",
+    "lodash": "^4.13.1",
+    "method-override": "^2.3.6",
+    "moment": "^2.13.0",
+    "mongoose": "^4.5.1",
+    "morgan": "^1.7.0",
+    "nodemailer": "^2.5.0",
+    "nodemon": "^1.9.2",
+    "open-graph-scraper": "^2.2.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7",
+    "prerender-node": "^2.3.0",
+    "request": "latest",
+    "scrape-it": "^3.1.1",
+    "stylus": "^0.54.5"
+  }
+}
