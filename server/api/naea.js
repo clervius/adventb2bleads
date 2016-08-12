@@ -130,7 +130,7 @@ router.get('/naea/scrape', function(req, res){
 			console.log(err || page);
 			console.log('scraped for: ' + zip)
 			var saveIt = function(element){
-				var newProfessional = new naea();
+				var newProfessional = new eaLead();
 				newProfessional.name = element.name;
 				newProfessional.website = element.website;
 				newProfessional.phone = element.phone;
@@ -138,7 +138,7 @@ router.get('/naea/scrape', function(req, res){
 				newProfessional.address = element.saddress + ', ' + element.address2;
 				console.log('adding to db');
 
-				newProfessional.save(function(err, naea){
+				newProfessional.save(function(err, ealead){
 					if(err){console.log('could not save naea' + err)}
 					else{ console.log('naea saved to db'); console.log('saved '+zip+' to db')}
 				})
