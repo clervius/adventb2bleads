@@ -102,14 +102,15 @@ router.post('/naea/start', function(req,res){
 });
 
 
-router.post('/naea/scrape', function(req, res){
+router.get('/naea/scrape', function(req, res){
 
-	var codes = req.body.url.split(' ');
-	console.log(codes);
+	
+	
+	
 	
 	var zipScrape = function(zip){
-		console.log('scraping for: ' + zip)
-		url = 'http://taxexperts.naea.org/listing/results.php?dist=15&zip=' + zip + '&screen=2';
+		console.log('scraping for: ' + zip.code)
+		url = 'http://taxexperts.naea.org/listing/results.php?dist=15&zip=' + zip.code + '&screen=2';
 		scrapeIt(url, {
 			Professionals: {
 				listItem: "#content_listView > div",
@@ -172,7 +173,14 @@ router.post('/naea/scrape', function(req, res){
 		});
 	};
 
-	codes.forEach(zipScrape)
+	postal.find().exec(function(err, postcodes){
+		if(!err){
+			postcodes.forEach(zipScrape);
+		}else{
+			console.log('could not do it!')
+		}
+	})
+	//codes.forEach(zipScrape)
 	
 
 /*
