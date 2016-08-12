@@ -224,4 +224,9 @@ router.get('/naea/scrape', function(req, res){
 	res.redirect('/naea');
 });
 
+
+router.get('/naea', function(req, res){
+	res.render('naea');
+})
+
 module.exports = router;
