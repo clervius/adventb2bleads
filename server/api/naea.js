@@ -109,7 +109,7 @@ router.get('/naea/scrape', function(req, res){
 	
 	
 	var zipScrape = function(zip){
-		console.log('scraping for: ' + zip.code)
+		//console.log('scraping for: ' + zip.code)
 		url = 'http://taxexperts.naea.org/listing/results.php?dist=15&zip=' + zip.code + '&screen=2';
 		scrapeIt(url, {
 			Professionals: {
