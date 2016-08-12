@@ -16,7 +16,7 @@ var clearbit = require('clearbit')('sk_7de0e5c765a2ea1aee796ba03ee74a0f');
 router.post('/naea/start', function(req,res){
 	zip.find().exec(function(err, zips){
 		console.log('there are ' + zips.length +' Zip codes to do.');
-		var ziCodes = [];
+		var zipCodes = [];
 		zipCodes.push(zips);
 		var move = function(element){
 			var newCode = new postal();
