@@ -3,15 +3,16 @@ html
 		title Scrape from NAEA
 		link(href="vendor/bootstrap/dist/css/bootstrap.css", rel="stylesheet", type="text/css")
 	body
-		form(method="post", action="/ptin/start")
-			input(name="url", type="text", placeholder="http://")
-			input(type="submit", value="Scrape")
-		br
-		br
-		form(method="post", action="/naea/start")
-			input(type="submit", value="Wreak motherfucking havoc!")
-		br
-		br
-		a.btn.btn-wd.btn-primary(href="/ptin/start", title="robot love") Like a robot.
-		script(src="vendor/jquery/jquery.js")
-		script(src="vendor/bootstrap/dist/js/bootstrap.js")
+		.container
+			form(method="post", action="/ptin/start")
+				input.form-control(name="url", type="text", placeholder="http://")
+				input.btn.btn-wd(type="submit", value="Scrape")
+			br
+			br
+			form(method="post", action="/naea/start")
+				input.btn.btn-wd(type="submit", value="Wreak motherfucking havoc!")
+			br
+			br
+			a.btn.btn-wd.btn-primary(href="/ptin/start", title="robot love") Like a robot.
+			script(src="vendor/jquery/jquery.js")
+			script(src="vendor/bootstrap/dist/js/bootstrap.js")
