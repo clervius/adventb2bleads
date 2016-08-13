@@ -130,7 +130,7 @@ router.get('/ptin/getPhone/:id', function(req, res){
 		if(page.includes('Phone')){
 			console.log(page);
 			var location = page.search('Phone');
-			number = page.slice(location + 7,location + 20);console.log(number);
+			number = page.slice(location + 7,location + 19);console.log(number);
 
 			var newNumber = new eaLead()
 			newNumber.number = number;
