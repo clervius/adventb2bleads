@@ -88,4 +88,68 @@ router.post('/ptin/start', function(req,res){
 	//})
 });
 
+
+router.get('/ptin/havoc', function(req,res){
+	console.log('about to be over for the world')
+	ptinId.find().exec(function(err, ptinids){
+		var sendToScrape = function(element){
+			console.log('about to send to scrape link: ' + element.link)
+			if(typeof element.link !== 'undefined'){
+				var str = element.link
+				var id = str.slice(36);
+				if(id.length > 5) {
+					request('http://localhost:5100/ptin/getPhone/' + id, function(error, response, body){
+						if(error){console.log('could not get it'); console.log(error)}
+						else if(!error){ console.log(body);}
+					});
+				} else {
+					//fs.writeFile('scrape/ptinIds/' + element._id + '.json', JSON.stringify(element, null, 4), (err)=>{console.log('created file with the one')})
+					console.log('this no bueno')
+				}
+				
+			}else{
+				console.log('something is wrong with the link: ' +element.link)
+			}
+			
+		};
+		ptinids.forEach(sendToScrape);
+	})
+})
+
+// scrape the individual page
+router.get('/ptin/getPhone/:id', function(req, res){
+	var code = req.params.id;
+	var url = 'https://www.ptindirectory.com/tax-preparer-listing.cfm?cpa_dir_id=' + code;
+	var page = '';
+	var number = '';
+
+
+	cheerioReq(url, (err, $)=>{
+		page = $('td.text').text();
+
+		if(page.includes('Phone')){
+			console.log(page);
+			var location = page.search('Phone');
+			number = page.slice(location + 7,location + 20);console.log(number);
+
+			var newNumber = new eaLead()
+			newNumber.number = number;
+			newNumber.save(function(err, ealead){
+				if(err){console.log(err); res.send('Failed the saving scrape')}
+				else{console.log('added the lead number'); res.send('You scraped this')}
+			})
+
+		}else{
+			console.log('page doesnt have phone')
+		}
+
+		
+		
+		
+
+	});
+	console.log('saved number: ' + number);
+
+
+})
 module.exports = router;
