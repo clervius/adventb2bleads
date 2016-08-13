@@ -1,6 +1,7 @@
 html
 	head
 		title Scrape from NAEA
+		link(href="vendor/bootstrap/dist/css/bootstrap.css", rel="stylesheet", type="text/css")
 	body
 		form(method="post", action="/ptin/start")
 			input(name="url", type="text", placeholder="http://")
@@ -11,4 +12,6 @@ html
 			input(type="submit", value="Wreak motherfucking havoc!")
 		br
 		br
-		a(href="/ptin/start", title="robot love") Like a robot.
+		a.btn.btn-wd.btn-primary(href="/ptin/start", title="robot love") Like a robot.
+		script(src="vendor/jquery/jquery.js")
+		script(src="vendor/bootstrap/dist/js/bootstrap.js")
