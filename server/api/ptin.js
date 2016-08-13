@@ -10,19 +10,20 @@ var naea = require('./naea.model');
 var zip = require('./zip.model');
 var eaLead = require('./ealead.model');
 var postal = require('./postal.model');
-var ptinId = require('./ptinId.model');
+var ptinId = require('./ptinIdss.model');
+var donePostal = require('./donePostal.model');
 
 
 
-//router.get('/ptin/start', function(req, res){
-router.post('/ptin/start', function(req,res){	
-	//postal.find().exec(function(err, zips){
-	//	if(err){
-	//		console.log('could not get the zip codes')
-	//	}else{
-	//		console.log('got zip codes');
+router.get('/ptin/start', function(req, res){
+//router.post('/ptin/start', function(req,res){	
+	postal.find().sort({'_id': -1}).limit(25).exec(function(err, zips){
+		if(err){
+			console.log('could not get the zip codes')
+		}else{
+			console.log('got zip codes');
 			var saveIds = function(element){
-				var url = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element + '&startrow=1';
+				var url = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element.code + '&startrow=1';
 				scrapeIt(url, {
 					Professionals:{
 						listItem: '.searchtable tr td',
@@ -37,6 +38,18 @@ router.post('/ptin/start', function(req,res){
 					pages: '.searchnav:nth-last-child(2) a'
 				}, (err, page)=>{
 					console.log(err || page);
+					if(!err){
+						var usedPostal = new donePostal();
+						usedPostal.code = element.code;
+						usedPostal.save(function(err, donepost){
+							if(!err){
+								console.log('moved to other collections');
+								postal.findByIdAndRemove(element._id, function(err, oldpost){
+									if(!err){console.log('success removed')}
+								})
+							}
+						})
+					}
 					// Add the link ID to the database
 					var saveLink = function(result){
 						var newPtin = new ptinId();
@@ -50,7 +63,7 @@ router.post('/ptin/start', function(req,res){
 					}
 					page.Professionals.forEach(saveLink);
 					for(i = 2; i < page.pages; i++){
-						var pUrl = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element + '&startrow=' + i;
+						var pUrl = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element.code + '&startrow=' + i;
 						scrapeIt(pUrl, {
 							Professionals:{
 								listItem: '.searchtable tr td',
@@ -79,13 +92,16 @@ router.post('/ptin/start', function(req,res){
 					})
 				}else if(provided )
 			}*/
-			var zipCodes = req.body.url;
-			zips = zipCodes.split(' ');
+			//zips = zipCodes.split(' ');
+			
 			zips.forEach(saveIds);
+			//var zipCodes = req.body.url;
+			
+			//zips.forEach(saveIds);
 
-			res.send('pay attention to the shell log')
-	//	}
-	//})
+			res.redirect('/naea');
+		}
+	})
 });
 
 
