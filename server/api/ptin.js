@@ -98,7 +98,7 @@ router.get('/ptin/havoc', function(req,res){
 				var str = element.link
 				var id = str.slice(36);
 				if(id.length > 5) {
-					request('b2bleads.herokuapp.com/ptin/getPhone/' + id, function(error, response, body){
+					request('http://b2bleads.herokuapp.com/ptin/getPhone/' + id, function(error, response, body){
 						if(error){console.log('could not get it'); console.log(error)}
 						else if(!error){ console.log(body);}
 					});
