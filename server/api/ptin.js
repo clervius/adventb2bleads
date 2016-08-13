@@ -14,14 +14,15 @@ var ptinId = require('./ptinId.model');
 
 
 
-router.get('/ptin/start', function(req, res){
-	postal.find().exec(function(err, zips){
-		if(err){
-			console.log('could not get the zip codes')
-		}else{
-			console.log('got zip codes');
+//router.get('/ptin/start', function(req, res){
+router.post('/ptin/start', function(req,res){	
+	//postal.find().exec(function(err, zips){
+	//	if(err){
+	//		console.log('could not get the zip codes')
+	//	}else{
+	//		console.log('got zip codes');
 			var saveIds = function(element){
-				var url = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element.code + '&startrow=1';
+				var url = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element + '&startrow=1';
 				scrapeIt(url, {
 					Professionals:{
 						listItem: '.searchtable tr td',
@@ -39,17 +40,17 @@ router.get('/ptin/start', function(req, res){
 					// Add the link ID to the database
 					var saveLink = function(result){
 						var newPtin = new ptinId();
-						newPtin.id = result.link.slice(36, 42);
 						newPtin.link = result.link;
-						newPtin.name = result.name
+						newPtin.name = result.name;
+						console.log(newPtin);
 						newPtin.save(function(err, ptinid){
-							if(!err){console.log('did not save this ptin ID')}
-							else{console.log('saved ptin ID')}
+							if(!err){console.log('Successfully saved PTIN ID'); }
+							else{console.log('could not saved ptin ID'); console.log(err)}
 						})
 					}
 					page.Professionals.forEach(saveLink);
 					for(i = 2; i < page.pages; i++){
-						var pUrl = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element.code + '&startrow=' + i;
+						var pUrl = 'https://www.ptindirectory.com/search-tax-preparers.cfm?last_name=&credentials=&services=&industries=&languages=&city=&state=&zip=' + element + '&startrow=' + i;
 						scrapeIt(pUrl, {
 							Professionals:{
 								listItem: '.searchtable tr td',
@@ -78,9 +79,13 @@ router.get('/ptin/start', function(req, res){
 					})
 				}else if(provided )
 			}*/
+			var zipCodes = req.body.url;
+			zips = zipCodes.split(' ');
 			zips.forEach(saveIds);
-		}
-	})
+
+			res.send('pay attention to the shell log')
+	//	}
+	//})
 });
 
 module.exports = router;

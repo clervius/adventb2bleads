@@ -11,6 +11,6 @@ module.exports = function(app){
 		res.render('zip');
 	})
 	app.post('/zip*', require('../api/zips'))
-	app.get('/ptin*', require('../api/ptin'))
+	app.post('/ptin*', require('../api/ptin'))
 
 }
