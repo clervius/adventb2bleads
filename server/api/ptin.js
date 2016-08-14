@@ -13,7 +13,8 @@ var postal = require('./postal.model');
 var ptinId = require('./ptinIdss.model');
 var donePostal = require('./donePostal.model');
 var endPtin = require('./endPtin.model')
-
+var noPhone = require('./noPhone.model')
+var weirdPtin = require('./ptinId.model')
 
 router.get('/ptin/start', function(req, res){
 //router.post('/ptin/start', function(req,res){	
@@ -107,7 +108,7 @@ router.get('/ptin/start', function(req, res){
 
 router.get('/ptin/havoc', function(req,res){
 	console.log('about to be over for the world')
-	ptinId.find().sort({'_id': -1}).limit(75).exec(function(err, ptinids){
+	ptinId.find().sort({'_id': -1}).limit(200).exec(function(err, ptinids){
 		var sendToScrape = function(element){
 			console.log('about to send to scrape link: ' + element.link)
 			if(typeof element.link !== 'undefined'){
@@ -121,7 +122,7 @@ router.get('/ptin/havoc', function(req,res){
 					cheerioReq(url, (err, $)=>{
 						page = $('td.text').text();
 
-						if(page.includes('Phone')){
+						if(page.includes('Phone') && page.length){
 							console.log(page);
 							var location = page.search('Phone');
 							number = page.slice(location + 7,location + 19);console.log(number);
@@ -155,22 +156,80 @@ router.get('/ptin/havoc', function(req,res){
 								}
 							})
 
-						}else{
+						}else if(page.length && !page.includes('Phone')){
 							console.log('page doesnt have phone')
+							var newnophone = new noPhone();
+							newnophone.name = element.name;
+							newnophone.link = element.link;
+							newnophone.save((err,nphone)=>{
+								if(err){console.log('could not move this nophone')}
+								else{
+									console.log('moved somewhere else to deal with later, deleting...');
+									ptinId.findByIdAndRemove(element._id, (err,thisPtin)=>{
+										if(err){
+											console.log('could not remove this ptin')
+										}else{
+											console.log('deleted ptin without number')
+										}
+									})
+								}
+							})
+						}else{
+							var newWeird = new weirdPtin();
+							newWeird.name = element.name;
+							newWeird.link = element.link;
+							newWeird.save((err,thisPtin)=>{
+								if(err){console.log('could not save this weird ptin')}
+								else{
+									console.log('saved this weird ptin');
+									ptinId.findByIdAndRemove(element._id, (err, ohno)=>{
+										if(!err){console.log('deleted this weird ptin. Deal with it later')}
+										else{console.log('could not delete this weird ptin.')}
+									})
+								}
+							})
 						}
 					})
 					// end what we do with id
 				} else {
 					//fs.writeFile('scrape/ptinIds/' + element._id + '.json', JSON.stringify(element, null, 4), (err)=>{console.log('created file with the one')})
-					console.log('this no bueno')
+					console.log('This code is too short, needs to be checked');
+					var newWeird = new weirdPtin();
+							newWeird.name = element.name;
+							newWeird.link = element.link;
+							newWeird.save((err,thisPtin)=>{
+								if(err){console.log('could not save this weird ptin')}
+								else{
+									console.log('saved this weird ptin');
+									ptinId.findByIdAndRemove(element._id, (err, ohno)=>{
+										if(!err){console.log('deleted this weird ptin. Deal with it later')}
+										else{console.log('could not delete this weird ptin.')}
+									})
+								}
+							})
 				}
 				
 			}else{
-				console.log('something is wrong with the link: ' +element.link)
+				console.log('something is wrong with the link: ' +element.link);
+				var newWeird = new weirdPtin();
+							newWeird.name = element.name;
+							newWeird.link = element.link;
+							newWeird.save((err,thisPtin)=>{
+								if(err){console.log('could not save this weird ptin')}
+								else{
+									console.log('saved this weird ptin');
+									ptinId.findByIdAndRemove(element._id, (err, ohno)=>{
+										if(!err){console.log('deleted this weird ptin. Deal with it later')}
+										else{console.log('could not delete this weird ptin.')}
+									})
+								}
+							})
+
 			}
 			
 		};
 		ptinids.forEach(sendToScrape);
+		res.redirect('/zip');
 	})
 })
 
