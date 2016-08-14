@@ -15,7 +15,7 @@ var donePostal = require('./donePostal.model');
 var endPtin = require('./endPtin.model')
 var noPhone = require('./noPhone.model')
 var weirdPtin = require('./ptinId.model')
-
+var badPostal = require('./badPostal.model')
 router.get('/ptin/start', function(req, res){
 //router.post('/ptin/start', function(req,res){	
 	postal.find().sort({'_id': -1}).limit(25).exec(function(err, zips){
@@ -50,6 +50,18 @@ router.get('/ptin/start', function(req, res){
 								})
 							}
 						})
+					}else{
+						var newbadPostal = new badPostal();
+						newbadPostal.code = element.code;
+						newbadPostal.save((err,savedpostal)=>{
+							if(!err){
+								console.log('moved the bad postal code');
+								postal.findByIdAndRemove(element._id,(err,deletedpost)=>{
+									if(!err){console.log('success removed')}
+								})
+							}
+						})
+
 					}
 					// Add the link ID to the database
 					var saveLink = function(result){
