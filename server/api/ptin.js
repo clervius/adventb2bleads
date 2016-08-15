@@ -18,7 +18,7 @@ var weirdPtin = require('./ptinId.model')
 var badPostal = require('./badPostal.model')
 router.get('/ptin/start', function(req, res){
 //router.post('/ptin/start', function(req,res){	
-	postal.find().sort({'_id': -1}).limit(25).exec(function(err, zips){
+	postal.find().sort({'_id': -1}).limit(45).exec(function(err, zips){
 		if(err){
 			console.log('could not get the zip codes')
 		}else{
