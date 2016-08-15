@@ -281,4 +281,58 @@ router.get('/ptin/getPhone/:id', function(req, res){
 
 
 })
+
+router.get('/ptin/cleanZips', function(req, res){
+	var finished = '';
+	var notfinished = '';
+
+	postal.find().exec((err, postals)=>{
+		if(!err){
+			console.log('Got old zip codes. There are: ' + postals.length + ' of them.')
+			notfinished = postals
+		}else{
+			console.log('could not get old zip codes')
+		}
+	});
+
+	donePostal.find().exec((err, postCode)=>{
+		if(!err){
+			console.log('got the done postcodes, there are: ' + postCode.length + ' of them.');
+			console.log('initiating clean sequence...');
+			var compareandRemove = function(element){
+				var compare = function(item){
+					if(item.code === element.code){
+						postal.findByIdAndRemove(element._id, (err, dup)=>{
+							if(!err){
+								console.log('successfully deleted duplicate')
+							}else{
+								console.log('could not delete duplicate')
+							}
+						})
+					}
+				}
+
+				//finished.forEach(compare)
+			}
+			//notfinished.forEach(compareandRemove)
+
+		}else{
+			console.log('could not get the postcodes');
+		}
+	});
+
+	for(var i = 0; i < Array.from(finished).length; i++){
+		console.log('going through code: ' + finished[i].code);
+		for(var j = 0; j < Array.from(notfinished).length; j++){
+			if(finished[i].code === notfinished[j].code){
+				postal.findByIdAndRemove(notfinished[j]._id, (err,thatcode)=>{
+					if(err){console.log('could not remove duplicate code')}
+					else{console.log('successfully removed duplicate code')}
+				})
+			}else{
+				console.log('doesnt match')
+			}
+		}
+	}
+})
 module.exports = router;

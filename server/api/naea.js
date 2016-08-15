@@ -11,7 +11,7 @@ var eaLead = require('./ealead.model');
 var postal = require('./postal.model');
 var fullcontact = require('fullcontact').createClient('b2bc30d1a1b76234');
 var clearbit = require('clearbit')('sk_7de0e5c765a2ea1aee796ba03ee74a0f');
-
+/*
 
 router.post('/naea/start', function(req,res){
 	zip.find().exec(function(err, zips){
@@ -99,7 +99,7 @@ router.post('/naea/start', function(req,res){
 		// add function here for each
 		zips.forEach(move);
 	})
-});
+});*/
 
 
 router.get('/naea/scrape', function(req, res){
