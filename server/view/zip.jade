@@ -1,17 +1,12 @@
 html
 	head
-		title Save Zip codes to db
+		title Get Phone Numbers 
 		link(href="vendor/bootstrap/dist/css/bootstrap.css", rel="stylesheet", type="text/css")
 	body
 		.container
-			form(method="post", action="/zip/add")
-				input.form-control(name="codes", type="text", placeholder="Paste Codes here")
-				input.btn(type="submit", value="Save Codes")
-			br
-			br
-			a.btn.btn-primary.btn-wd(href="/ptin/havoc") Go get them
-			script(src="vendor/jquery/jquery.js")
-			script(src="vendor/bootstrap/dist/js/bootstrap.js")
-			br
-			br
-			a.btn.btn-danger.btn-wd(href="/ptin/cleanZips") Remove Duplicates in Zips
+			.row(style="margin-top:25px")
+				.col-md-6
+					a.btn.btn-primary.btn-wd(href="/ptin/havoc") Go get them NOWW!
+		script(src="vendor/jquery/jquery.js")
+		script(src="vendor/bootstrap/dist/js/bootstrap.js")
+					
