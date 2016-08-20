@@ -120,7 +120,7 @@ router.get('/ptin/start', function(req, res){
 
 router.get('/ptin/havoc', function(req,res){
 	console.log('about to be over for the world')
-	ptinId.find().sort({'_id': -1}).limit(200).exec(function(err, ptinids){
+	ptinId.find().sort({'_id': -1}).limit(150).exec(function(err, ptinids){
 		var sendToScrape = function(element){
 			console.log('about to send to scrape link: ' + element.link)
 			if(typeof element.link !== 'undefined'){
