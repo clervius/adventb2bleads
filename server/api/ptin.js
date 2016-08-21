@@ -282,6 +282,10 @@ router.get('/ptin/getPhone/:id', function(req, res){
 
 })
 
+router.get('/ptin/cleanPhone', function(req, res){
+	endPtin.find().sort({'_id':-1}).limit(100).exec((err,thisOne)=>{})
+});
+
 router.get('/ptin/cleanZips', function(req, res){
 	var finished = '';
 	var notfinished = '';
