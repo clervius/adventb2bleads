@@ -120,7 +120,7 @@ router.get('/ptin/start', function(req, res){
 
 router.get('/ptin/havoc', function(req,res){
 	console.log('about to be over for the world')
-	ptinId.find().sort({'_id': -1}).limit(150).exec(function(err, ptinids){
+	ptinId.find().sort({'_id': -1}).limit(200).exec(function(err, ptinids){
 		var sendToScrape = function(element){
 			console.log('about to send to scrape link: ' + element.link)
 			if(typeof element.link !== 'undefined'){
@@ -132,74 +132,79 @@ router.get('/ptin/havoc', function(req,res){
 					var page = '';
 					var number = ''
 					cheerioReq(url, (err, $)=>{
-						page = $('td.text').text();
+						if(!err){
+							page = $('td.text').text();
 
-						if(page.includes('Phone') && page.length){
-							console.log(page);
-							var location = page.search('Phone');
-							number = page.slice(location + 7,location + 19);console.log(number);
+							if(page.includes('Phone') && page.length){
+								console.log(page);
+								var location = page.search('Phone');
+								number = page.slice(location + 7,location + 19);console.log(number);
 
-							var newNumber = new eaLead()
-							newNumber.number = number;
-							newNumber.save(function(err, ealead){
-								if(err){
-									console.log(err); 
-									console.log('Failed the saving scrape')}
-								else{
-									console.log('added the lead number'); 
-									var newComplete = new endPtin();
-									newComplete.link = element.link;
-									newComplete.name = element.name;
-									newComplete.phone = number;
-									newComplete.save((err,complete)=>{
-										if(err){console.log('could not move to complete')}
-										else{
-											console.log('moved to complete');
-											ptinId.findByIdAndRemove(element._id, function(err, theid){
-												if(!err){console.log('finally done with this one')}
-												else{
-													console.log('could not delete this one.')
-												}
-											})
-										}
-									})
+								var newNumber = new eaLead()
+								newNumber.number = number;
+								newNumber.save(function(err, ealead){
+									if(err){
+										console.log(err); 
+										console.log('Failed the saving scrape')}
+									else{
+										console.log('added the lead number'); 
+										var newComplete = new endPtin();
+										newComplete.link = element.link;
+										newComplete.name = element.name;
+										newComplete.phone = number;
+										newComplete.save((err,complete)=>{
+											if(err){console.log('could not move to complete')}
+											else{
+												console.log('moved to complete');
+												ptinId.findByIdAndRemove(element._id, function(err, theid){
+													if(!err){console.log('finally done with this one')}
+													else{
+														console.log('could not delete this one.')
+													}
+												})
+											}
+										})
 
-									//res.redirect('/zip')
-								}
-							})
+										//res.redirect('/zip')
+									}
+								})
 
-						}else if(page.length && !page.includes('Phone')){
-							console.log('page doesnt have phone')
-							var newnophone = new noPhone();
-							newnophone.name = element.name;
-							newnophone.link = element.link;
-							newnophone.save((err,nphone)=>{
-								if(err){console.log('could not move this nophone')}
-								else{
-									console.log('moved somewhere else to deal with later, deleting...');
-									ptinId.findByIdAndRemove(element._id, (err,thisPtin)=>{
-										if(err){
-											console.log('could not remove this ptin')
-										}else{
-											console.log('deleted ptin without number')
-										}
-									})
-								}
-							})
+							}else if(page.length && !page.includes('Phone')){
+								console.log('page doesnt have phone')
+								var newnophone = new noPhone();
+								newnophone.name = element.name;
+								newnophone.link = element.link;
+								newnophone.save((err,nphone)=>{
+									if(err){console.log('could not move this nophone')}
+									else{
+										console.log('moved somewhere else to deal with later, deleting...');
+										ptinId.findByIdAndRemove(element._id, (err,thisPtin)=>{
+											if(err){
+												console.log('could not remove this ptin')
+											}else{
+												console.log('deleted ptin without number')
+											}
+										})
+									}
+								})
+							}else{
+								var newWeird = new weirdPtin();
+								newWeird.name = element.name;
+								newWeird.link = element.link;
+								newWeird.save((err,thisPtin)=>{
+									if(err){console.log('could not save this weird ptin')}
+									else{
+										console.log('saved this weird ptin');
+										ptinId.findByIdAndRemove(element._id, (err, ohno)=>{
+											if(!err){console.log('deleted this weird ptin. Deal with it later')}
+											else{console.log('could not delete this weird ptin.')}
+										})
+									}
+								})
+							}
 						}else{
-							var newWeird = new weirdPtin();
-							newWeird.name = element.name;
-							newWeird.link = element.link;
-							newWeird.save((err,thisPtin)=>{
-								if(err){console.log('could not save this weird ptin')}
-								else{
-									console.log('saved this weird ptin');
-									ptinId.findByIdAndRemove(element._id, (err, ohno)=>{
-										if(!err){console.log('deleted this weird ptin. Deal with it later')}
-										else{console.log('could not delete this weird ptin.')}
-									})
-								}
-							})
+							console.log(err);
+							console.log('could not go on')
 						}
 					})
 					// end what we do with id
