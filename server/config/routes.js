@@ -9,6 +9,9 @@ module.exports = function(app){
 
 	app.get('/zip', function(req, res){
 		res.render('zip');
+	});
+	app.get('/text', function(req,res){
+		res.render('text')
 	})
 	app.post('/zip*', require('../api/zips'))
 	app.post('/ptin*', require('../api/ptin'));

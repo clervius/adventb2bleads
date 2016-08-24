@@ -15,7 +15,9 @@ var donePostal = require('./donePostal.model');
 var endPtin = require('./endPtin.model')
 var noPhone = require('./noPhone.model')
 var weirdPtin = require('./ptinId.model')
-var badPostal = require('./badPostal.model')
+var badPostal = require('./badPostal.model');
+var text = require('textbelt');
+
 router.get('/ptin/start', function(req, res){
 //router.post('/ptin/start', function(req,res){	
 	postal.find().sort({'_id': -1}).limit(45).exec(function(err, zips){
@@ -145,7 +147,9 @@ router.get('/ptin/havoc', function(req,res){
 								newNumber.save(function(err, ealead){
 									if(err){
 										console.log(err); 
-										console.log('Failed the saving scrape')}
+										console.log('Failed the saving scrape');
+
+									}
 									else{
 										console.log('added the lead number'); 
 										var newComplete = new endPtin();
@@ -343,5 +347,22 @@ router.get('/ptin/cleanZips', function(req, res){
 			}
 		}
 	}
+})
+
+router.get('/ptin/sendtestText', function(req,res){
+	console.log('about to send this text')
+	var testOpts = {
+		fromAddr: 'support@moretaxleads.com',
+		fromName: 'Joram Clervius',
+		region: 'us',
+		subject: 'Dominate Your Market'
+	}
+
+	var testBody = 'Tax Professionals, dominate your area and make more money next season! Find out how: http://moretaxleads.com/needclients';
+	text.debug(true);
+	text.send('9543247726', testBody, undefined, function(){
+		console.log('sent the text')
+		res.redirect('/zip')
+	})
 })
 module.exports = router;
