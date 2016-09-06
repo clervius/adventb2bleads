@@ -43,7 +43,9 @@
     "prerender-node": "^2.3.0",
     "request": "latest",
     "scrape-it": "^3.1.1",
+    "simple-nexmo": "^2.2.1",
     "stylus": "^0.54.5",
-    "textbelt": "0.0.3"
+    "textbelt": "0.0.3",
+    "twilio": "^2.10.0"
   }
 }

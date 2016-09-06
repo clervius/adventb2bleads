@@ -16,7 +16,86 @@ var endPtin = require('./endPtin.model')
 var noPhone = require('./noPhone.model')
 var weirdPtin = require('./ptinId.model')
 var badPostal = require('./badPostal.model');
+var smsDone = require('./smsPhone.model');
+var smsBad = require('./noSMS.model')
 var text = require('textbelt');
+var Nexmo = require('simple-nexmo');
+var nexmo = new Nexmo({
+	  apiKey: '1fc028ac',
+	  apiSecret: 'af15098e569c71a0',
+	  useSSL: true,
+	  debug: false
+});
+var twilio = require('twilio')
+var tclient = new twilio.RestClient('AC5fd75ef19aeb1977b16dc2804784e4ac', 'bc336be44f5df4e06cef314662093b4f');
+
+
+router.get('/ptin/sendSms', function(req,res){
+	eaLead.find().sort({'_id': -1}).limit(50).exec(function(err, phones){
+		if(err){
+			console.log('there was an error getting 50 numbers');
+		}else{
+			console.log('got the numbers');
+			var sendText = function(element){
+				var theNumber = element.number.replace(/-/g,'')
+				console.log(theNumber)
+				
+				tclient.messages.create({
+					body:'Tax Professionals, dominate your area and make more money next season! Find out how: https://www.moretaxleads.com',
+					to: theNumber,
+					from: '9546035838'
+				}, function(err, message){
+					if(err){
+						console.log(err);
+						console.log('could not text')
+						var newBadNum = new smsBad()
+						newBadNum.number = theNumber;
+						newBadNum.error = err;
+						newBadNum.save(function(err,badnum){
+							if(!err){
+								console.log('saved bad num, now removing')
+								eaLead.findByIdAndRemove(element._id, function(err,removed){
+									if(!err){
+										console.log('removed bad num')
+									}else{
+										console.log('couldnt remove bad num,' + err)
+									}
+								})
+							}else{
+								console.log('error saving this bad num')
+								console.log(err)
+							}
+						})
+					}else{
+						console.log(message);
+						console.log('texted');
+						var newgoodNum = new smsDone();
+						newgoodNum.number = theNumber;
+						newgoodNum.save(function(err,num){
+							if(!err){
+								console.log('saved num');
+								eaLead.findByIdAndRemove(element._id, function(err,phone){
+									if(!err){
+										console.log('saved and removed good num')
+									}else{
+										console.log(err)
+									}
+								})
+							}else{
+								console.log(err);
+
+							}
+						})
+					}
+				});
+				
+			}
+			phones.forEach(sendText);
+			res.redirect('/zip');
+		}
+	})
+});
+
 
 router.get('/ptin/start', function(req, res){
 //router.post('/ptin/start', function(req,res){	
