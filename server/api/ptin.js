@@ -31,7 +31,7 @@ var tclient = new twilio.RestClient('AC5fd75ef19aeb1977b16dc2804784e4ac', 'bc336
 
 
 router.get('/ptin/sendSms', function(req,res){
-	eaLead.find().sort({'_id': -1}).limit(50).exec(function(err, phones){
+	eaLead.find().sort({'_id': -1}).limit(200).exec(function(err, phones){
 		if(err){
 			console.log('there was an error getting 50 numbers');
 		}else{
@@ -45,7 +45,7 @@ router.get('/ptin/sendSms', function(req,res){
 					to: theNumber,
 					from: '9546035838'
 				}, function(err, message){
-					if(err){
+					if(err && err.message !== "Too Many Requests"){
 						console.log(err);
 						console.log('could not text')
 						var newBadNum = new smsBad()
@@ -66,6 +66,8 @@ router.get('/ptin/sendSms', function(req,res){
 								console.log(err)
 							}
 						})
+					}if(err && err.message == "Too Many Requests"){
+						console.log('too many requests... chilling with this num')
 					}else{
 						console.log(message);
 						console.log('texted');
