@@ -41,7 +41,7 @@ router.get('/ptin/sendSms', function(req,res){
 				console.log(theNumber)
 				
 				tclient.messages.create({
-					body:'Tax Professionals, dominate your area and make more money next season! Find out how: https://www.moretaxleads.com',
+					body:'Hey, you still do taxes? thought you might like this https://www.moretaxleads.com',
 					to: theNumber,
 					from: '9546035838'
 				}, function(err, message){
